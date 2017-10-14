@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<%- include('../layouts/head') %>
+	<body>
+	<%- include('../layouts/menu') %>
+
+
+	<div class="container">
+	  <div class="row">
+	    <div class="col">
+
+				<div class="list-group" style="margin-top: 50px">
+					<% for(var i=0; i< entries.length; i++) { %>
+					<% if(entries[i].question){ %>
+
+
+						<div class="card <%if(entries[i].updated){%>border-light<%}%> mb-3" >
+						  <div class="card-body">
+						    <h4 class="card-title"><%= entries[i].question %></h4>
+						    <p class="card-text">
+									<% for( var j in entries[i].incorrect){%>
+										<span class="text-secondary"> #<%= entries[i].incorrect[j] %> </span>
+									<% } %>
+								</p>
+						    <a href="/spelling/entries/<%= entries[i].id%>" class="card-link">Edit</a>
+						    <a href="/spelling/entries/<%= entries[i].id%>/original" class="card-link">Original</a>
+						  </div>
+						</div>
+
+
+<!--
+				  <a href="/spelling/entries/<%= entries[i].id%>" class="list-group-item list-group-item-action flex-column align-items-start">
+				    <div class="d-flex w-100 justify-content-between">
+				      <h5 class="mb-1"><%= entries[i].question %></h5>
+				    </div>
+						<% for( var j in entries[i].incorrect){%>
+							<span class="text-primary"> #<%= entries[i].incorrect[j] %> </span>
+						<% } %>
+				  </a>
+					<a class="btn btn-outline-primary" href="#" role="button">Link</a>
+-->
+					<% } %>
+					<% } %>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+	</body>
+</html>

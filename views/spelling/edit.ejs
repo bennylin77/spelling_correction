@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+	<%- include('../layouts/head') %>
+	<body>
+	<%- include('../layouts/menu') %>
+	<div class="container">
+	  <div class="row">
+	    <div class="col">
+				<div class="card" style="margin-top: 50px;">
+				  <div class="card-header">
+						<strong><%= entry.question %></strong>
+				  </div>
+				  <div class="card-body">
+
+						<div class="alert alert-warning alert-dismissible fade show" role="alert">
+						  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						    <span aria-hidden="true">&times;</span>
+						  </button>
+						  <strong>Ooops!</strong> You did't choose any word or enter any suggested word.
+						</div>
+
+
+						<form method="POST" action="/spelling/entries/<%=entry.id %>">
+							<input type="hidden" name="id" value="<%=entry.id %>">
+							<% for(var i in candidates) { %>
+								<% var key = i %>
+								<% var val = candidates[i]%>
+								<% for(var j in val){ %>
+										<% var sub_key = j %>
+										<% var sub_val = val[j] %>
+										<div class="form-group row">
+								      <div class="col-sm-2 font-weight-bold"><%= sub_key %></div>
+											<div class="col-sm-10">
+												<div class="row">
+													<div class="col">
+														<div class="text-primary">Original:</div>
+														<div class="w-100"></div>
+														<div class="form-check form-check-inline">
+														  <label class="form-check-label">
+														    <input class="form-check-input" type="radio" name="<%= sub_key %>" value="<%= sub_key %>"> <%= sub_key %>
+														  </label>
+														</div>
+													</div>
+													<div class="w-100"></div>
+													<div class="col">
+														<div class="text-primary">Dictionary I:</div>
+														<div class="w-100"></div>
+														<% for( var k in sub_val.Enchant ){ %>
+														<div class="form-check form-check-inline">
+														  <label class="form-check-label">
+														    <input class="form-check-input" type="radio" name="<%= sub_key %>" value="<%=sub_val.Enchant[k]%>"> <%= sub_val.Enchant[k]%>
+														  </label>
+														</div>
+														<% } %>
+													</div>
+													<div class="w-100"></div>
+													<div class="col">
+														<div class="text-primary">Dictionary II:</div>
+														<div class="w-100"></div>
+														<% for( var k in sub_val.Norvig ){ %>
+														<div class="form-check form-check-inline">
+														  <label class="form-check-label">
+														    <input class="form-check-input" type="radio" name="<%= sub_key %>" value="<%=sub_val.Norvig[k]%>"> <%= sub_val.Norvig[k]%>
+														  </label>
+														</div>
+														<% } %>
+													</div>
+													<div class="w-100"></div>
+													<div class="col">
+															<div class="form-row align-items-center">
+																<div class="col-auto">
+																  <label class="form-check-label">
+																    <input class="form-check-input" type="radio" name="<%= sub_key %>" value="" id="<%= sub_key %>_other_radio"> <span class="text-primary">other</span>
+																  </label>
+																</div>
+																<div class="col-auto">
+														    	<input type="text" class="form-control" name="<%= sub_key %>_text" placeholder="" id="<%= sub_key %>_other_text" onchange="changeRadioOther('<%= sub_key %>')">
+																</div>
+															</div>
+													</div>
+												</div>
+								      </div>
+								    </div>
+								<% } %>
+							<% } %>
+							<div class="form-group row">
+								<div class="col-sm-10">
+						  		<button type="submit" class="btn btn-outline-primary">Submit</button>
+								</div>
+							</div>
+						</form>
+
+
+				  </div>
+					<div class="card-footer bg-transparent text-right text-secondary"><small><%= entry.id %></small></div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	</body>
+</html>
+
+
+<script>
+	$(".alert").hide()
+
+	function changeRadioOther(id){
+	 var other = document.getElementById(id+"_other_radio");
+	    other.value = document.getElementById(id+"_other_text").value;
+	}
+
+
+	var form = document.querySelector("form");
+	form.onsubmit = function(e) {
+
+
+		<% for(var i in candidates) { %>
+			<% var val = candidates[i]%>
+			<% for(var j in val){ %>
+					if(form.elements['<%= j %>'].value===""){
+			      //$('#myModal').modal('show')
+						$(".alert").show();
+
+						console.log("error")
+			      return false;
+			    }
+			<%}%>
+		<%}%>
+	};
+
+
+</script>
