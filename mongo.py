@@ -5,7 +5,7 @@ db = client.vizwiz
 entries = db.entries
 
 import json
-with open('new_processed_train.json') as data_file:
+with open('dedup_new.json') as data_file:
     data = json.load(data_file)
 
 

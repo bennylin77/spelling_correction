@@ -1,25 +1,113 @@
 const mongoose = require("mongoose");
 const Entry = require("../schema/entry");
+const Cat = require("../schema/cat");
 const router = require("express").Router();
 
+router.get('/cats_new', cats_new);
+router.get('/cats', cats);
+router.get('/cats/:id/:original/catsOriginal', catsOriginal);
+router.route("/cats/:id").get(catsEdit).post(catsUpdate);
 router.get('/entries', all);
 router.get('/entries/:id/original', original);
-
 router.route("/entries/:id").get(edit).post(update);
 
+
+
+function cats_new(req, res) {
+  Cat.find( { incorrect: { $gt: [] } }, function (err, cats) {
+			//console.log(cats)
+      if (err)
+          res.send(err);
+      else
+	       res.render('spelling/index_new.ejs', {cats: cats})
+  });
+}
+
+function cats(req, res) {
+  Cat.find( { incorrect: { $gt: [] } }, function (err, cats) {
+			//console.log(cats)
+      if (err)
+          res.send(err);
+      else
+	       res.render('spelling/answerIndex.ejs', {cats: cats})
+  });
+}
+
+function catsOriginal(req, res){
+	Cat.findById(req.id, function (err, cat) {
+		if (err) return handleError(err);
+		cat.incorrect = cat.incorrect.filter(function(a){ return a.toLowerCase() !== req.params.original.toLowerCase()})
+		cat.save(function (err) {
+				  if (err) return handleError(err);
+
+
+					Cat.find({ incorrect: req.params.original.toLowerCase() }, function (err, cats) {
+						if (err) return handleError(err);
+							//console.log(typeof cats)
+							//console.log(Object.keys(cats).length)
+							var promises = cats.map(function(c) {
+							  return new Promise(function(resolve, reject) {
+									console.log(c)
+									c.incorrect = c.incorrect.filter(function(a){ return a.toLowerCase() !== req.params.original.toLowerCase()})
+									c.save(function (err) {
+												if (err) return handleError(err);
+												resolve();
+									})
+							  });
+							});
+							Promise.all(promises)
+							.then(function() {
+									Cat.find({ incorrect: req.params.original.toLowerCase() }, function (err, cs) {
+										if (err) return handleError(err);
+										console.log(Object.keys(cs).length)
+										res.redirect('/spelling/cats');
+									});
+							})
+							.catch(console.error);
+				});
+		});
+	})
+}
+function catsEdit(req, res) {
+  Cat.findById(req.id, function (err, cat) {
+    if (err) {
+      console.log('GET Error: There was a problem retrieving: ' + err);
+    } else {
+			res.render('spelling/answerEdit.ejs', {cat: cat})
+    }
+  });
+}
+function catsUpdate(req, res) {
+	Cat.findById(req.id, function (err, cat) {
+	  if (err) return handleError(err);
+		incorrect = Array.from(new Set(incorrect))
+		for( var word of incorrect ){
+			lowercase_word = word.toLowerCase();
+			if( req.body[lowercase_word] ){
+				//console.log(cat.answers);
+				cat.answers = cat.answers.map(function(x) {
+					 x.answer = x.answer.toLowerCase().replace(word, req.body[lowercase_word].toLowerCase());
+				   return x;
+				});
+				incorrect = incorrect.filter(function(a){ return a.toLowerCase() !== lowercase_word})
+			}
+		}
+		Cat.findByIdAndUpdate(req.id, { $set: { answers: cat.answers, incorrect: incorrect }}, { new: true }, function (err, tank) {
+		  if (err) return handleError(err);
+		  res.redirect('/spelling/cats');
+		});
+	})
+}
+
+
 function all(req, res) {
-	//res.render('spelling/index.ejs')
-	//var process = spawn('python3.6',["candidates.py", 123]);
   Entry.find( { incorrect: { $gt: [] }, updated: {$ne: true}  }, function (err, entries) {
       if (err)
           res.send(err);
       else
 	       res.render('spelling/index.ejs', {entries: entries})
-
   });
-
 }
-
 function edit(req, res) {
   Entry.findById(req.id, function (err, entry) {
     if (err) {
@@ -36,7 +124,6 @@ function edit(req, res) {
     }
   });
 }
-
 function getCandidates(arg){
   return new Promise(function (resolve, reject){
 		var spawn = require("child_process").spawn;
@@ -68,7 +155,6 @@ function update(req, res) {
 				//doc.save(callback);
 			}
 		}
-
 		entry.save(function (err) {
 		  if (err) return handleError(err);
 			Entry.find( { incorrect: { $gt: [] }, updated: {$ne: true} }, function (err, entries) {
@@ -84,7 +170,6 @@ function update(req, res) {
 
 
 function original(req, res){
-
 	Entry.findOneAndUpdate({_id: req.id}, {updated: true},
 												 {new: true}, function(err, entry){
 		if(err){
@@ -97,8 +182,6 @@ function original(req, res){
 					res.render('spelling/index.ejs',{entries: entries});
 		});
 	});
-
-
 }
 
 // route middleware to validate :id

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<%- include('../layouts/head') %>
+	<body>
+	<%- include('../layouts/menu') %>
+
+
+	<div class="container">
+	  <div class="row">
+	    <div class="col">
+
+				<div class="list-group" style="margin-top: 50px">
+					<% for(var i=0; i< cats.length; i++) { %>
+					<% if(cats[i].question){ %>
+						<div class="card <%if(cats[i].updated){%>border-light<%}%> mb-3" >
+						  <div class="card-body">
+						    <h4 class="card-title">
+									<%= i+1%> <%= cats[i].question%>
+								</h4>
+						    <p class="card-text">
+									<ul class="list-inline">
+										<% for( ans of cats[i].answers ){%>
+										<li class="list-inline-item">&#9830; <%= ans.answer%> </li>
+										<% } %>
+									</ul>
+									<%incorrect = cats[i].incorrect.map(function(x){ return x.toLowerCase() })%>
+									<%incorrect = Array.from(new Set(incorrect)) %>
+									<% for( j of incorrect){ %>
+										<span class="text-secondary"> #<%= j.toLowerCase() %>:<a href="/spelling/cats/<%= cats[i].id%>/<%= j%>/catsOriginal" class="card-link">Original</a></span>
+									<% } %>
+								</p>
+						    <a href="/spelling/cats/<%= cats[i].id%>" class="card-link">Edit</a>
+						  </div>
+						</div>
+					<% } %>
+					<% } %>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+	</body>
+</html>

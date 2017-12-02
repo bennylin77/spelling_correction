@@ -7,7 +7,7 @@ const db = require('./db');
 
 //controllers
 const spellingController = require("./controllers/spellingController");
-
+const d3Controller = require("./controllers/d3Controller");
 //Express request pipeline
 const app = express();
 app.set('view engine', 'ejs');
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/spelling", spellingController);
-
+app.use("/d3", d3Controller);
 
 app.get('/', function (req, res) {
   res.send('Hello World!')

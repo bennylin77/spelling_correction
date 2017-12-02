@@ -107,17 +107,12 @@
 
 <script>
 	$(".alert").hide()
-
 	function changeRadioOther(id){
 	 var other = document.getElementById(id+"_other_radio");
 	    other.value = document.getElementById(id+"_other_text").value;
 	}
-
-
 	var form = document.querySelector("form");
 	form.onsubmit = function(e) {
-
-
 		<% for(var i in candidates) { %>
 			<% var val = candidates[i]%>
 			<% for(var j in val){ %>
@@ -131,6 +126,4 @@
 			<%}%>
 		<%}%>
 	};
-
-
 </script>
