@@ -5,7 +5,7 @@ db = client.vizwiz
 cats = db.cats
 
 import json
-with open('vizwiz_new.json') as data_file:
+with open('vizwiz_new_1_11_2018.json') as data_file:
     data = json.load(data_file)
 
 

@@ -3,27 +3,21 @@
 	<%- include('../layouts/head') %>
 	<body>
 	<%- include('../layouts/menu') %>
-
-
-
 	<style>
-	svg {
-		/*font-size: 11.8px;*/
-		font-size: 12.5px
-	}
 	</style>
 
 	<script src="//d3js.org/d3.v3.min.js"></script>
 	<script>
 
-	var width = 800,
-	    height = 800,
+	var width = 2048,
+	    height = 2048,
 	    radius = Math.min(width, height) / 2,
 	    color = d3.scale.category20c();
 
 	var svg = d3.select("body").append("svg")
 	    .attr("width", width)
 	    .attr("height", height)
+			.attr("font-size", "46")
 	  	.append("g")
 	    .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
 
@@ -74,10 +68,16 @@
 				else{
 					//console.log(d);
 					return color(d.parent.name);
-				}*/
-				//return color((d.children ? d : d.parent).name);
-				if( d.name == "the")
-					return "#a1d99b"
+				}
+				return color((d.children ? d : d.parent).name);*/
+				if( d.name == "what")
+					return "#9ecae1"
+				else if( d.name == "this")
+						return "#dadaeb"
+				else if( d.name == "kind" || d.name == "how")
+								return "#c7e9c0"
+				else if( d.name == "say")
+								return "#fdd0a2"
 				else
 					return d.children ? color(d.name) : "#ffffff";
 			})
@@ -88,18 +88,19 @@
 		//0.045//Math.round( (d.dx*180)/Math.PI)
 		path.append("text")
 		        .text(function(d) { if(d.name!="sentence_end" && d.dx > 0.07 )
-						  										if(d.y >= 16000)
-																		return truncate(d.name, 8)
+						  										if(d.y >= 80000)
+																		return truncate(d.name, 1000)
 																	else
 																		return d.name;})
-						.style({"font-size": function(d) { 	if(d.y >= 25000)
-																									return "90%"
-																								else if(d.y >= 16000)
-																									return "90%"
-																								else if(d.y >= 8000)
-																										return "90%"
+						.style({"font-weight": "bold", "font-size": function(d) {
+																								if(d.y >= 500000)
+																									return "60%"
+																								else if(d.y >= 300000)
+																									return "75%"
+																								else if(d.y >= 200000)
+																										return "80%"
 																								else
-																									return "90%;" }})
+																									return "100%;" }})
 		        .classed("label", true)
 		        .attr("x", function(d) { return d.x; })
 		        .attr("text-anchor", "middle")

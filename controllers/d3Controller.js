@@ -80,7 +80,7 @@ function wordCloud(req, res) {
 								ans = ans.replace(/(\r\n|\n|\r)/gm,"");
 								ans = ans.trim()
 								if( ans.search("unsuitable")==-1 && ans.search("unanswerable")==-1){
-									   console.log(ans)
+								//	   console.log(ans)
 										 if (data[ans]){
 											 data[ans]++;
 										 } else {
@@ -90,13 +90,16 @@ function wordCloud(req, res) {
 						 	}
 						}
 				 }
+				 let arr = []
 				 const filtered = Object.keys(data)
-				   .filter(key =>  data[key] >= 0 )
+				   .filter(key =>  data[key] >= 5 )
 				   .reduce((obj, key) => {
+				     arr.push({"text":key, "value": data[key] });
 				     obj[key] = data[key];
 				     return obj;
 				   }, {});
-				 res.render('d3/word_cloud.ejs', {data: filtered})
+
+				 res.render('d3/word_cloud.ejs', {data: filtered, data_arr: arr})
 			}
   });
 }
@@ -129,12 +132,16 @@ function all(req, res) {
 	//res.render('spelling/index.ejs')
 	//var process = spawn('python3.6',["candidates.py", 123]);
   Cat.find( {'question': {$exists : true, $nin : ["", "=", "\r\n", " "] } }, 'question').exec( function (err, entries) {
+
+			console.log(33333)
+
       if (err)
           res.send(err);
       else{
+
 				 var data = { 'name': "", "children":[] };
 				 for( var entry in entries){
-					  //console.log(entry)
+					  console.log(entry)
 				 		buildData(data.children, entries[entry].question.match(/\b(\w+)\b/g), 0)
 			 	 }
 				 //console.log(data)

@@ -14,5 +14,5 @@ for cat in cats.find():
 	data["answers"] = cat["answers"]
 	data_set.append(data)
 
-with open('vizwiz_Nov_11_2017.json', 'w') as json_file:
+with open('vizwiz_Jan_2_2018.json', 'w') as json_file:
 	json.dump(data_set, json_file)
